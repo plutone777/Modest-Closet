@@ -9,7 +9,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // ✅ Controllers for text fields
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -26,7 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 40),
 
-              // ✅ Logo/Icon
               Center(
                 child: Icon(
                   Icons.shopping_bag,
@@ -36,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
 
-              // ✅ App Name
               const Center(
                 child: Text(
                   "Modest Closet",
@@ -47,7 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              // ✅ Screen Title
               const Center(
                 child: Text(
                   "Log In",
@@ -56,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
 
-              /// ✅ Email field (using reusable widget)
               CustomTextField(
                 controller: _emailController,
                 label: "Email",
@@ -64,7 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
 
-              /// ✅ Password field (using reusable widget with toggle)
               CustomTextField(
                 controller: _passwordController,
                 label: "Password",
@@ -83,16 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 30),
 
-              /// ✅ Login Button
               CustomButton(
                 text: "Log In",
                 onPressed: () {
-                  // 🔜 Hook up Firebase login here
                 },
               ),
               const SizedBox(height: 15),
 
-              /// ✅ Navigation to Register Screen
               Center(
                 child: TextButton(
                   onPressed: () {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mae_assignment/services/auth.service.dart';
 import '/widgets/reusable_widgets.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,6 +18,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _selectedRole = "sister";
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService(); // ✅ create instance
+
+  void _registerUser() async {
+    if (_passwordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match!")),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    String? result = await _authService.registerUser(
+      username: _usernameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      role: _selectedRole,
+    );
+
+    setState(() => _isLoading = false);
+
+    if (result == null) {
+      // ✅ Registration successful
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Account created successfully!")),
+      );
+
+      Navigator.pushReplacementNamed(context, '/login');
+    } else {
+      // ❌ Show error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +78,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 30),
 
-              /// ✅ Using CustomTextField for username
-              CustomTextField(
-                controller: _usernameController,
-                label: "Username",
-                prefixIcon: Icons.person,
-              ),
+              CustomTextField(controller: _usernameController, label: "Username", prefixIcon: Icons.person),
+              const SizedBox(height: 20),
+              CustomTextField(controller: _emailController, label: "Email", prefixIcon: Icons.email),
               const SizedBox(height: 20),
 
-              /// ✅ Using CustomTextField for email
-              CustomTextField(
-                controller: _emailController,
-                label: "Email",
-                prefixIcon: Icons.email,
-              ),
-              const SizedBox(height: 20),
-
-              /// ✅ Password field with toggle
+              // 🔹 Password field
               CustomTextField(
                 controller: _passwordController,
                 label: "Password",
@@ -64,16 +91,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscureText: !_isPasswordVisible,
                 suffixIcon: IconButton(
                   icon: Icon(_isPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
+                  onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
                 ),
               ),
               const SizedBox(height: 20),
 
-              /// ✅ Confirm Password field
+              // 🔹 Confirm password field
               CustomTextField(
                 controller: _confirmPasswordController,
                 label: "Confirm Password",
@@ -81,16 +104,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscureText: !_isConfirmPasswordVisible,
                 suffixIcon: IconButton(
                   icon: Icon(_isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off),
-                  onPressed: () {
-                    setState(() {
-                      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                    });
-                  },
+                  onPressed: () => setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
                 ),
               ),
               const SizedBox(height: 20),
 
-              /// ✅ Dropdown stays the same
               DropdownButtonFormField<String>(
                 value: _selectedRole,
                 decoration: InputDecoration(
@@ -102,29 +120,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   DropdownMenuItem(value: "stylist", child: Text("Stylist")),
                   DropdownMenuItem(value: "moderator", child: Text("Moderator")),
                 ],
-                onChanged: (val) {
-                  setState(() {
-                    _selectedRole = val!;
-                  });
-                },
+                onChanged: (val) => setState(() => _selectedRole = val!),
               ),
               const SizedBox(height: 30),
 
-              /// ✅ Using CustomButton
-              CustomButton(
-                text: "Sign Up",
-                onPressed: () {
-                  // 🔜 Hook up Firebase
-                },
-              ),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CustomButton(text: "Sign Up", onPressed: _registerUser),
 
               const SizedBox(height: 15),
 
               Center(
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
+                  onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
                   child: const Text(
                     "Already have an account? Log In",
                     style: TextStyle(color: Color.fromARGB(255, 216, 166, 176)),
