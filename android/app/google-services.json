@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "204887592214",
+    "project_id": "mae-project-d86a2",
+    "storage_bucket": "mae-project-d86a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:204887592214:android:c7fba6fc4dc5f493639437",
+        "android_client_info": {
+          "package_name": "com.example.mae_assignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa-lmX2_M3WGlhoUj_QdFREKRGJCmQdYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
