@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'closet_screen.dart';
 
 class SisterHomePage extends StatefulWidget {
   const SisterHomePage({super.key});
@@ -8,38 +9,37 @@ class SisterHomePage extends StatefulWidget {
 }
 
 class _SisterHomePageState extends State<SisterHomePage> {
-  int _currentIndex = 0;
+  int _selectedIndex = 0;
 
-  final List<Widget> _pages = const [
-    Center(child: Text("Closet Page", style: TextStyle(fontSize: 22))),
-    Center(child: Text("Feed Page", style: TextStyle(fontSize: 22))),
-    Center(child: Text("Chat Page", style: TextStyle(fontSize: 22))),
-    Center(child: Text("Profile Page", style: TextStyle(fontSize: 22))),
+  // ✅ Add your screens here
+  final List<Widget> _pages = [
+    const ClosetScreen(),
+    const Center(child: Text("Feed Page")),
+    const Center(child: Text("Chat Page")),
+    const Center(child: Text("Profile Page")),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
-
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: _selectedIndex,
         selectedItemColor: const Color.fromARGB(255, 216, 166, 176),
         unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.checkroom), label: "Closet"),
-          BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Feed"),
-          BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: "Chat"),
+          BottomNavigationBarItem(icon: Icon(Icons.dynamic_feed), label: "Feed"),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "Chat"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
-
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
       ),
     );
   }
