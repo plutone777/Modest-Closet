@@ -6,7 +6,7 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Register a new user
+  // REGISTER FUNCTION
   Future<String?> registerUser({
     required String username,
     required String email,
@@ -14,16 +14,13 @@ class AuthService {
     required String role,
   }) async {
     try {
-      // 🔹 Create user in Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      // 🔹 Get the UID of the new user
       String uid = userCredential.user!.uid;
 
-      // 🔹 Save user details in Firestore (Users collection)
       await _firestore.collection('Users').doc(uid).set({
         'username': username,
         'email': email,
@@ -31,11 +28,33 @@ class AuthService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      return null; // success
+      return null;
     } on FirebaseAuthException catch (e) {
-      return e.message; // return error message
+      return e.message;
     } catch (e) {
       return e.toString();
     }
   }
+
+  // LOGIN FUNCTION
+  Future<String?> loginUser(String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+
+      String uid = userCredential.user!.uid;
+      DocumentSnapshot userDoc = await _firestore.collection('Users').doc(uid).get();
+
+      if (userDoc.exists) {
+        return userDoc['role']; 
+      } else {
+        return null; 
+      }
+    } on FirebaseAuthException catch (e) {
+      return "error:${e.code}"; 
+    }
+  }
+
 }

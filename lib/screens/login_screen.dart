@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mae_assignment/screens/sister_home.dart';
+import 'package:mae_assignment/services/auth.service.dart';
 import '/widgets/reusable_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -9,11 +11,53 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
+
+  Future<void> _handleLogin() async {
+    setState(() => _isLoading = true);
+
+    String? result = await _authService.loginUser(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (!mounted) return;
+
+    setState(() => _isLoading = false);
+
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("User data not found in Firestore.")),
+      );
+    } else if (result.startsWith("error:")) {
+
+      String code = result.replaceFirst("error:", "");
+      String message = "Login failed";
+
+      if (code == "user-not-found") {
+        message = "No user found for that email.";
+      } else if (code == "wrong-password") {
+        message = "Wrong password.";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } else {
+
+      if (result == "sister") {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const SisterHomePage()));
+      } else if (result == "stylist") {
+        // add code to navigate to ur homepage
+      } else if (result == "moderator") {
+        // add code to navigate to ur homepage
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               CustomButton(
                 text: "Log In",
-                onPressed: () {
-                },
+                onPressed: _handleLogin,
               ),
               const SizedBox(height: 15),
 
