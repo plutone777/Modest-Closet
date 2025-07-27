@@ -193,3 +193,112 @@ class ClothingCard extends StatelessWidget {
     );
   }
 }
+
+// Reusable FAB
+class CustomFAB extends StatelessWidget {
+  final List<FABAction> actions;
+  final Color fabColor;
+  final IconData fabIcon;
+
+  const CustomFAB({
+    super.key,
+    required this.actions,
+    this.fabColor = const Color.fromARGB(255, 216, 166, 176),
+    this.fabIcon = Icons.add,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: fabColor,
+      child: Icon(fabIcon, color: Colors.white),
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => Wrap(
+            children: actions.map((action) {
+              return ListTile(
+                leading: Icon(action.icon, color: Colors.black87),
+                title: Text(action.label),
+                onTap: () {
+                  Navigator.pop(context); // close sheet
+                  action.onTap();
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class FABAction {
+  final String label;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  FABAction({required this.label, required this.icon, required this.onTap});
+}
+
+
+// Reusable Outfit Card
+class OutfitCard extends StatelessWidget {
+  final String outfitName;
+  final List<String> imageUrls;
+  final VoidCallback onTap;
+
+  const OutfitCard({
+    super.key,
+    required this.outfitName,
+    required this.imageUrls,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                outfitName,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              imageUrls.isEmpty
+                  ? const Text("No items found for this outfit")
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: imageUrls.map((url) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                url,
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mae_assignment/screens/create_outfit_screen.dart';
 import 'package:mae_assignment/screens/item_details_screen.dart';
+import 'package:mae_assignment/screens/view_outfit_screen.dart';
 import 'upload_item_screen.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
@@ -29,7 +31,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
 
       body: Column(
         children: [
-          // ✅ Use CustomDropdown instead of a hardcoded DropdownButtonFormField
+
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: CustomDropdown(
@@ -44,7 +46,6 @@ class _ClosetScreenState extends State<ClosetScreen> {
             ),
           ),
 
-          // ✅ Clothes List (Filtered)
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: (selectedCategory == "All")
@@ -120,18 +121,47 @@ class _ClosetScreenState extends State<ClosetScreen> {
         ],
       ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 216, 166, 176),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UploadItemScreen(userId: userId),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: CustomFAB(
+        actions: [
+          FABAction(
+            label: "Add Item",
+            icon: Icons.add,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UploadItemScreen(userId: userId),
+                ),
+              );
+            },
+          ),
+          FABAction(
+            label: "Create Outfit",
+            icon: Icons.checkroom,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CreateOutfitScreen(userId: userId),
+                ),
+              );
+            },
+          ),
+          FABAction(
+            label: "View Outfits",
+            icon: Icons.style,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OutfitListScreen(userId: userId),
+                ),
+              );
+            },
+          ),
+        ],
       ),
+
     );
   }
 }

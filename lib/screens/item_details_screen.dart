@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mae_assignment/screens/upload_item_screen.dart';
 import 'package:mae_assignment/services/upload_service.dart';
+import 'package:mae_assignment/widgets/reusable_buttons.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
 class ItemDetailScreen extends StatelessWidget {
@@ -110,23 +111,11 @@ class ItemDetailScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // DELETE BUTTON
-                  CustomButton(
-                    text: "Delete",
-                    backgroundColor: const Color.fromARGB(255, 121, 78, 89),
-                    onPressed: () async {
-                      try {
-                        await UploadService().deleteItem(itemId);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Item deleted successfully")),
-                        );
-                        Navigator.pop(context);
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error: $e")),
-                        );
-                      }
-                    },
+                  DeleteButton(
+                    itemType: "Item",
+                    onDelete: () => UploadService().deleteItem(itemId),
                   ),
+
                 ],
               ),
             ),
