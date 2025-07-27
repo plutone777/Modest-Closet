@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mae_assignment/screens/create_outfit_screen.dart';
-import 'package:mae_assignment/screens/item_details_screen.dart';
-import 'package:mae_assignment/screens/view_outfit_screen.dart';
-import 'upload_item_screen.dart';
+import 'package:mae_assignment/screens/outfits/create_outfit_screen.dart';
+import 'package:mae_assignment/screens/clothes/item_details_screen.dart';
+import 'package:mae_assignment/screens/outfits/view_outfit_screen.dart';
+import 'clothes/upload_item_screen.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
 class ClosetScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mae_assignment/screens/item_details_screen.dart';
+import 'package:mae_assignment/screens/clothes/item_details_screen.dart';
 import 'package:mae_assignment/widgets/reusable_buttons.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mae_assignment/screens/upload_item_screen.dart';
+import 'package:mae_assignment/screens/clothes/upload_item_screen.dart';
 import 'package:mae_assignment/services/upload_service.dart';
 import 'package:mae_assignment/widgets/reusable_buttons.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';

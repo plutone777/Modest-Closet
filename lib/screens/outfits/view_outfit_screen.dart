@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mae_assignment/screens/outfit_details_screen.dart';
+import 'package:mae_assignment/screens/outfits/outfit_details_screen.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
 class OutfitListScreen extends StatelessWidget {
