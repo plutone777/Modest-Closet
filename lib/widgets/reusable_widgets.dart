@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // Reusable TextField widget
@@ -307,55 +308,68 @@ class PostCard extends StatelessWidget {
   final String imageUrl;
   final String description;
   final bool allowComments;
+  final String userId;
 
   const PostCard({
     super.key,
     required this.imageUrl,
     required this.description,
     required this.allowComments,
+    required this.userId,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 3,
+      elevation: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
+          FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance.collection('Users').doc(userId).get(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  title: Text("Loading..."),
+                );
+              }
+
+              final userData = snapshot.data!.data() as Map<String, dynamic>;
+              final profileIcon = userData['profileIcon'] ?? '';
+              final username = userData['username'] ?? 'Unknown';
+
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage:
+                      profileIcon.isNotEmpty ? NetworkImage(profileIcon) : null,
+                  backgroundColor: const Color.fromARGB(255, 216, 166, 176),
+                  child: profileIcon.isEmpty
+                      ? const Icon(Icons.person, color: Colors.white)
+                      : null,
+                ),
+                title: Text(username, style: const TextStyle(fontWeight: FontWeight.bold)),
+              );
+            },
+          ),
+
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.network(
-              imageUrl,
-              width: double.infinity,
-              height: 250,
-              fit: BoxFit.cover,
-            ),
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(imageUrl, fit: BoxFit.cover, width: double.infinity),
           ),
 
           Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              description.isNotEmpty ? description : "No description provided",
-              style: const TextStyle(fontSize: 16),
-            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Text(description),
           ),
-
-          if (!allowComments)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
-              child: Text(
-                "Comments are turned off",
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-            ),
-
-          const SizedBox(height: 8),
         ],
       ),
     );
   }
 }
-

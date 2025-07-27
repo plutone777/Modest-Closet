@@ -5,8 +5,8 @@ import 'package:mae_assignment/firebase_options.dart';
 
 import 'screens/login/register_screen.dart';
 import 'screens/login/login_screen.dart';
-import 'screens/profile_screen.dart';
-import 'screens/edit_profile_screen.dart';
+import 'screens/sisterprofile/profile_screen.dart';
+import 'screens/sisterprofile/edit_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

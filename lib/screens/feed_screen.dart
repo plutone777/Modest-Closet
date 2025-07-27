@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mae_assignment/controllers/feed_controller.dart';
-import 'package:mae_assignment/screens/upload_post_screen.dart';
+import 'package:mae_assignment/screens/posts/post_detals_screen.dart';
+import 'package:mae_assignment/screens/posts/upload_post_screen.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -41,11 +42,28 @@ class FeedScreen extends StatelessWidget {
             itemCount: posts.length,
             itemBuilder: (context, index) {
               final post = posts[index];
-              return PostCard(
-                imageUrl: post['imageUrl'],
-                description: post['description'],
-                allowComments: post['allowComments'],
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PostDetailScreen(
+                        imageUrl: post['imageUrl'],
+                        description: post['description'],
+                        allowComments: post['allowComments'],
+                        userId: post['userId'],   // ✅ Pass only userId
+                      ),
+                    ),
+                  );
+                },
+                child: PostCard(
+                  imageUrl: post['imageUrl'],
+                  description: post['description'],
+                  allowComments: post['allowComments'],
+                  userId: post['userId'], 
+                ),
               );
+
             },
           );
         },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mae_assignment/screens/closet_screen.dart';
 import 'package:mae_assignment/screens/feed_screen.dart';
-import 'package:mae_assignment/screens/profile_screen.dart';
+import 'package:mae_assignment/screens/sisterprofile/profile_screen.dart';
 
 class SisterHomePage extends StatefulWidget {
   const SisterHomePage({super.key});

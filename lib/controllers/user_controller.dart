@@ -32,6 +32,7 @@ class UserController {
     }
   }
 
+  // Update user profile
   Future<void> updateProfile({
     required String username,
     required String email,
@@ -71,4 +72,16 @@ class UserController {
       throw Exception("Failed to update profile: $e");
     }
   }
+
+    Future<Map<String, dynamic>?> getUserById(String userId) async {
+      try {
+        final doc = await _firestore.collection("Users").doc(userId).get();
+        return doc.exists ? doc.data() : null;
+      } catch (e) {
+        print("Error fetching user by ID: $e");
+        return null;
+      }
+    }
+
+
 }
