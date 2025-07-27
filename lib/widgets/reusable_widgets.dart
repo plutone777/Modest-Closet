@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Reusable TextField widget
+// Reusable TextField widget
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
@@ -101,7 +101,7 @@ class CustomDropdown extends StatelessWidget {
   }
 }
 
-/// Reusable Empty State Widget
+// Reusable Empty State Widget
 class CustomEmptyState extends StatelessWidget {
   final String message;
   final IconData icon;
@@ -131,7 +131,7 @@ class CustomEmptyState extends StatelessWidget {
   }
 }
 
-/// Reusable Clothing Card
+// Reusable Clothing Card
 class ClothingCard extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -241,7 +241,6 @@ class FABAction {
   FABAction({required this.label, required this.icon, required this.onTap});
 }
 
-
 // Reusable Outfit Card
 class OutfitCard extends StatelessWidget {
   final String outfitName;
@@ -302,3 +301,61 @@ class OutfitCard extends StatelessWidget {
     );
   }
 }
+
+// Reusable PostCard
+class PostCard extends StatelessWidget {
+  final String imageUrl;
+  final String description;
+  final bool allowComments;
+
+  const PostCard({
+    super.key,
+    required this.imageUrl,
+    required this.description,
+    required this.allowComments,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.network(
+              imageUrl,
+              width: double.infinity,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              description.isNotEmpty ? description : "No description provided",
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+
+          if (!allowComments)
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(
+                "Comments are turned off",
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ),
+
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+

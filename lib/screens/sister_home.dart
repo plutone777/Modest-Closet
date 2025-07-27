@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'package:mae_assignment/screens/feed_screen.dart';
 import 'package:mae_assignment/screens/closet_screen.dart';
+import 'package:mae_assignment/screens/feed_screen.dart';
+import 'package:mae_assignment/screens/profile_screen.dart';
 
 class SisterHomePage extends StatefulWidget {
   const SisterHomePage({super.key});
@@ -13,11 +14,10 @@ class _SisterHomePageState extends State<SisterHomePage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const ClosetScreen(),
-    //const FeedScreen(),
-    const Center(child: Text("Feed Page")),
+    ClosetScreen(),
+    FeedScreen(),
     const Center(child: Text("Chat Page")),
-    const Center(child: Text("Profile Page")),
+    ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {

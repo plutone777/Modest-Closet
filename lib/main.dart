@@ -1,8 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mae_assignment/firebase_options.dart';
+
+
 import 'screens/login/register_screen.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/profile_screen.dart';
+import 'screens/edit_profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,11 +23,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sisters App',
 
-      home: const RegisterScreen(),  
+      home: const RegisterScreen(),
 
       routes: {
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => const LoginScreen(),
+
+        '/profile': (context) => ProfileScreen(),
+        '/editProfile': (context) => const EditProfileScreen(),
       },
     );
   }
