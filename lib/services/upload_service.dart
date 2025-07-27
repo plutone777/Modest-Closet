@@ -12,14 +12,13 @@ class UploadService {
     required File imageFile,
     required String userId
   }) async {
-    // Upload image to Firebase Storage
+
     String fileName = "${DateTime.now().millisecondsSinceEpoch}.jpg";
     Reference storageRef = FirebaseStorage.instance.ref().child("clothes/$fileName");
 
     await storageRef.putFile(imageFile);
     String downloadUrl = await storageRef.getDownloadURL();
 
-    // Save details to Firestore
     await FirebaseFirestore.instance.collection("Clothes").add({
       "name": name,
       "category": category,

@@ -25,7 +25,6 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
   File? _selectedImage;
   bool _isUploading = false;
 
-  /// Pick image from gallery
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -33,7 +32,6 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
     }
   }
 
-  /// Upload item using ClosetService
   Future<void> _uploadItem() async {
     if (_selectedImage == null || _nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(

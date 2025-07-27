@@ -8,6 +8,7 @@ class ClosetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final String userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
@@ -16,60 +17,92 @@ class ClosetScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 216, 166, 176),
         foregroundColor: Colors.white,
       ),
+
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection("Clothes")
-            .where("userId", isEqualTo: userId) // ✅ filter only current user’s clothes
-            .orderBy("createdAt", descending: true)
+            .where("userId", isEqualTo: userId) 
             .snapshots(),
+
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
+          if (snapshot.hasError) {
+            return const Center(child: Text("Something went wrong!"));
+          }
+
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No items in your closet yet!"));
+            return const Center(
+              child: Text(
+                "Your closet is empty!\nClick + to add clothes.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+            );
           }
 
           final clothes = snapshot.data!.docs;
 
           return GridView.builder(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 2 items per row
+              crossAxisCount: 2, 
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.72,
             ),
             itemCount: clothes.length,
             itemBuilder: (context, index) {
               final item = clothes[index];
               final imageUrl = item['imageUrl'];
               final name = item['name'];
+              final category = item['category'];
 
               return Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                elevation: 4,
+                elevation: 3,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                        borderRadius:
+                            const BorderRadius.vertical(top: Radius.circular(12)),
                         child: Image.network(
                           imageUrl,
                           fit: BoxFit.cover,
                           width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) => const Center(
+                            child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                          ),
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            category,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -79,13 +112,14 @@ class ClosetScreen extends StatelessWidget {
           );
         },
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 216, 166, 176),
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => UploadItemScreen(userId: userId), // ✅ pass userId
+              builder: (context) => UploadItemScreen(userId: userId),
             ),
           );
         },
