@@ -34,7 +34,7 @@ class CustomTextField extends StatelessWidget {
   }
 }
 
-/// Reusable Button widget
+// Reusable Button widget
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -157,7 +157,6 @@ class ClothingCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
@@ -171,7 +170,6 @@ class ClothingCard extends StatelessWidget {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

@@ -29,6 +29,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
 
       body: Column(
         children: [
+          // ✅ Use CustomDropdown instead of a hardcoded DropdownButtonFormField
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: CustomDropdown(
@@ -43,6 +44,7 @@ class _ClosetScreenState extends State<ClosetScreen> {
             ),
           ),
 
+          // ✅ Clothes List (Filtered)
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: (selectedCategory == "All")
@@ -98,18 +100,18 @@ class _ClosetScreenState extends State<ClosetScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ItemDetailScreen(
+                              itemId: item.id,
                               imageUrl: item['imageUrl'],
                               name: item['name'],
                               category: item['category'],
-                              fabric: item['fabric'],   // ✅ if you stored this in Firestore
-                              season: item['season'],   // ✅ optional
-                              style: item['style'],     // ✅ optional
-                      ),
-                    ),
-                  );
-                },
-              );
-
+                              fabric: item['fabric'],   
+                              season: item['season'],   
+                              style: item['style'],     
+                            ),
+                          ),
+                        );
+                      },
+                    );
                   },
                 );
               },
