@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'closet_screen.dart';
+//import 'package:mae_assignment/screens/feed_screen.dart';
+import 'package:mae_assignment/screens/closet_screen.dart';
 
 class SisterHomePage extends StatefulWidget {
   const SisterHomePage({super.key});
@@ -11,9 +12,9 @@ class SisterHomePage extends StatefulWidget {
 class _SisterHomePageState extends State<SisterHomePage> {
   int _selectedIndex = 0;
 
-  // ✅ Add your screens here
   final List<Widget> _pages = [
     const ClosetScreen(),
+    //const FeedScreen(),
     const Center(child: Text("Feed Page")),
     const Center(child: Text("Chat Page")),
     const Center(child: Text("Profile Page")),

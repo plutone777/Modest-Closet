@@ -66,6 +66,21 @@ class _CreateOutfitScreenState extends State<CreateOutfitScreen> {
 
           const SizedBox(height: 10),
 
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: CustomDropdown(
+              label: "Filter by Category",
+              value: selectedCategory,
+              items: ["All", ...ClosetData.categories], 
+              onChanged: (String? newValue) {
+                setState(() => selectedCategory = newValue!);
+              },
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: (selectedCategory == "All")

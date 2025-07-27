@@ -1,19 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mae_assignment/services/upload_service.dart';
 import 'package:mae_assignment/data/closet_data.dart';
+import 'image_picker_controller.dart';
 
 class UploadItemController {
   final TextEditingController nameController = TextEditingController();
   final UploadService closetService = UploadService();
+  final ImagePickerController imagePicker = ImagePickerController();
 
   String selectedCategory = ClosetData.categories.first;
   String selectedSeason = ClosetData.seasons.first;
   String selectedStyle = ClosetData.styles.first;
-  String selectedFabric = ClosetData.fabricsByCategory[ClosetData.categories.first]!.first;
+  String selectedFabric =
+      ClosetData.fabricsByCategory[ClosetData.categories.first]!.first;
 
-  File? selectedImage;
   bool isUploading = false;
 
   void initializeEditData({
@@ -25,17 +26,10 @@ class UploadItemController {
   }) {
     nameController.text = existingName ?? "";
     selectedCategory = existingCategory ?? ClosetData.categories.first;
-    selectedFabric = existingFabric ?? ClosetData.fabricsByCategory[selectedCategory]!.first;
+    selectedFabric =
+        existingFabric ?? ClosetData.fabricsByCategory[selectedCategory]!.first;
     selectedSeason = existingSeason ?? ClosetData.seasons.first;
     selectedStyle = existingStyle ?? ClosetData.styles.first;
-  }
-
-  Future<void> pickImage(Function(File?) onImagePicked) async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      selectedImage = File(pickedFile.path);
-      onImagePicked(selectedImage);
-    }
   }
 
   Future<void> saveItem({
@@ -43,6 +37,7 @@ class UploadItemController {
     String? itemId,
     String? existingImageUrl,
     required BuildContext context,
+    File? pickedImage,
   }) async {
     if (nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,9 +49,9 @@ class UploadItemController {
     isUploading = true;
 
     try {
+      // CASE 1: NEW ITEM UPLOAD
       if (itemId == null) {
-
-        if (selectedImage == null) {
+        if (pickedImage == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Please select an image.")),
           );
@@ -69,15 +64,16 @@ class UploadItemController {
           fabric: selectedFabric,
           season: selectedSeason,
           style: selectedStyle,
-          imageFile: selectedImage!,
+          imageFile: pickedImage, 
           userId: userId,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Item uploaded successfully!")),
         );
-      } else {
-
+      }
+      // CASE 2: UPDATE EXISTING ITEM
+      else {
         await closetService.updateItem(
           itemId: itemId,
           name: nameController.text,
@@ -85,7 +81,7 @@ class UploadItemController {
           fabric: selectedFabric,
           season: selectedSeason,
           style: selectedStyle,
-          newImageFile: selectedImage,
+          newImageFile: pickedImage,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -95,9 +91,9 @@ class UploadItemController {
 
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Save failed: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Save failed: $e")));
     } finally {
       isUploading = false;
     }

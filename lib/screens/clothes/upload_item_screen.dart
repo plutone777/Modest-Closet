@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mae_assignment/controllers/upload_item_controller.dart';
+import 'package:mae_assignment/widgets/reusable_image_uploader.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 import 'package:mae_assignment/data/closet_data.dart';
+import 'package:mae_assignment/controllers/image_picker_controller.dart';
 
 class UploadItemScreen extends StatefulWidget {
   final String userId;
@@ -33,6 +35,8 @@ class UploadItemScreen extends StatefulWidget {
 
 class _UploadItemScreenState extends State<UploadItemScreen> {
   final UploadItemController _controller = UploadItemController();
+  final ImagePickerController _imageController = ImagePickerController();
+
 
   @override
   void initState() {
@@ -113,24 +117,13 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
               ),
               const SizedBox(height: 20),
 
-              OutlinedButton.icon(
-                icon: const Icon(Icons.image),
-                label: Text(isEditMode ? "Change Image" : "Pick Image"),
-                onPressed: () => _controller.pickImage((pickedFile) {
-                  setState(() {}); 
+              UploadImageArea(
+                imageFile: _imageController.selectedImage,
+                existingImageUrl: widget.existingImageUrl,
+                onTap: () => _imageController.pickImage((pickedFile) {
+                  setState(() {});
                 }),
               ),
-
-              if (_controller.selectedImage != null)
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.file(_controller.selectedImage!, height: 150, fit: BoxFit.cover),
-                )
-              else if (widget.existingImageUrl != null)
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Image.network(widget.existingImageUrl!, height: 150, fit: BoxFit.cover),
-                ),
 
               const SizedBox(height: 30),
 
@@ -144,6 +137,7 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
                         itemId: widget.itemId,
                         existingImageUrl: widget.existingImageUrl,
                         context: context,
+                        pickedImage: _imageController.selectedImage, 
                       ),
                     ),
                     const SizedBox(height: 10),
