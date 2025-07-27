@@ -1,76 +1,61 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mae_assignment/services/upload_service.dart';
+import 'package:mae_assignment/controllers/upload_item_controller.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 import 'package:mae_assignment/data/closet_data.dart';
 
 class UploadItemScreen extends StatefulWidget {
   final String userId;
-  const UploadItemScreen({super.key, required this.userId});
+
+  // Extra fields for edit mode
+  final String? itemId;
+  final String? existingImageUrl;
+  final String? existingName;
+  final String? existingCategory;
+  final String? existingFabric;
+  final String? existingSeason;
+  final String? existingStyle;
+
+  const UploadItemScreen({
+    super.key,
+    required this.userId,
+    this.itemId,
+    this.existingImageUrl,
+    this.existingName,
+    this.existingCategory,
+    this.existingFabric,
+    this.existingSeason,
+    this.existingStyle,
+  });
 
   @override
   State<UploadItemScreen> createState() => _UploadItemScreenState();
 }
 
 class _UploadItemScreenState extends State<UploadItemScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final UploadService _closetService = UploadService();
+  final UploadItemController _controller = UploadItemController();
 
-  String _selectedCategory = ClosetData.categories.first;
-  String _selectedSeason = ClosetData.seasons.first;
-  String _selectedStyle = ClosetData.styles.first;
-  String _selectedFabric = ClosetData.fabricsByCategory[ClosetData.categories.first]!.first;
+  @override
+  void initState() {
+    super.initState();
 
-  File? _selectedImage;
-  bool _isUploading = false;
-
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() => _selectedImage = File(pickedFile.path));
-    }
-  }
-
-  Future<void> _uploadItem() async {
-    if (_selectedImage == null || _nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter item details and select an image.")),
+    if (widget.itemId != null) {
+      _controller.initializeEditData(
+        existingName: widget.existingName,
+        existingCategory: widget.existingCategory,
+        existingFabric: widget.existingFabric,
+        existingSeason: widget.existingSeason,
+        existingStyle: widget.existingStyle,
       );
-      return;
-    }
-
-    setState(() => _isUploading = true);
-
-    try {
-      await _closetService.uploadItem(
-        name: _nameController.text,
-        category: _selectedCategory,
-        fabric: _selectedFabric,
-        season: _selectedSeason,
-        style: _selectedStyle,
-        imageFile: _selectedImage!,
-        userId: widget.userId,
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Item uploaded successfully!")),
-      );
-      Navigator.pop(context);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Upload failed: $e")),
-      );
-    } finally {
-      setState(() => _isUploading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditMode = widget.itemId != null;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Upload Item"),
+        title: Text(isEditMode ? "Edit Item" : "Upload Item"),
         backgroundColor: const Color.fromARGB(255, 216, 166, 176),
         foregroundColor: Colors.white,
       ),
@@ -80,9 +65,9 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Item Name
+
               TextField(
-                controller: _nameController,
+                controller: _controller.nameController,
                 decoration: InputDecoration(
                   labelText: "Item Name",
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -90,77 +75,87 @@ class _UploadItemScreenState extends State<UploadItemScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Category dropdown
               CustomDropdown(
                 label: "Category",
-                value: _selectedCategory,
+                value: _controller.selectedCategory,
                 items: ClosetData.categories,
                 onChanged: (val) {
                   setState(() {
-                    _selectedCategory = val!;
-                    _selectedFabric = ClosetData.fabricsByCategory[_selectedCategory]!.first;
+                    _controller.selectedCategory = val!;
+                    _controller.selectedFabric =
+                        ClosetData.fabricsByCategory[_controller.selectedCategory]!.first;
                   });
                 },
               ),
               const SizedBox(height: 20),
 
-              // Fabric dropdown
               CustomDropdown(
                 label: "Fabric",
-                value: _selectedFabric,
-                items: ClosetData.fabricsByCategory[_selectedCategory]!,
-                onChanged: (val) => setState(() => _selectedFabric = val!),
+                value: _controller.selectedFabric,
+                items: ClosetData.fabricsByCategory[_controller.selectedCategory]!,
+                onChanged: (val) => setState(() => _controller.selectedFabric = val!),
               ),
               const SizedBox(height: 20),
 
-              // Season dropdown
               CustomDropdown(
                 label: "Season",
-                value: _selectedSeason,
+                value: _controller.selectedSeason,
                 items: ClosetData.seasons,
-                onChanged: (val) => setState(() => _selectedSeason = val!),
+                onChanged: (val) => setState(() => _controller.selectedSeason = val!),
               ),
               const SizedBox(height: 20),
 
-              // Style dropdown
               CustomDropdown(
                 label: "Style",
-                value: _selectedStyle,
+                value: _controller.selectedStyle,
                 items: ClosetData.styles,
-                onChanged: (val) => setState(() => _selectedStyle = val!),
+                onChanged: (val) => setState(() => _controller.selectedStyle = val!),
               ),
               const SizedBox(height: 20),
 
-              // Pick image button
               OutlinedButton.icon(
                 icon: const Icon(Icons.image),
-                label: const Text("Pick Image"),
-                onPressed: _pickImage,
+                label: Text(isEditMode ? "Change Image" : "Pick Image"),
+                onPressed: () => _controller.pickImage((pickedFile) {
+                  setState(() {}); 
+                }),
               ),
 
-              // Show selected image
-              if (_selectedImage != null)
+              if (_controller.selectedImage != null)
                 Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Image.file(_selectedImage!, height: 150, fit: BoxFit.cover),
+                  child: Image.file(_controller.selectedImage!, height: 150, fit: BoxFit.cover),
+                )
+              else if (widget.existingImageUrl != null)
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.network(widget.existingImageUrl!, height: 150, fit: BoxFit.cover),
                 ),
 
               const SizedBox(height: 30),
 
-              // Upload button
-              _isUploading
+              // SAVE BUTTON
+              _controller.isUploading
                   ? const Center(child: CircularProgressIndicator())
-                  : SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          backgroundColor: const Color.fromARGB(255, 216, 166, 176),
-                        ),
-                        onPressed: _uploadItem,
-                        child: const Text("Save Item", style: TextStyle(fontSize: 18)),
+                  : CustomButton(
+                      text: isEditMode ? "Save Changes" : "Save Item",
+                      onPressed: () => _controller.saveItem(
+                        userId: widget.userId,
+                        itemId: widget.itemId,
+                        existingImageUrl: widget.existingImageUrl,
+                        context: context,
                       ),
                     ),
+                    const SizedBox(height: 10),
+
+              // CANCEL BUTTON (only for edit mode)
+              if (isEditMode)
+                CustomButton(
+                  text: "Cancel",
+                  backgroundColor: Color.fromARGB(255, 121, 78, 89),
+                  onPressed: () => Navigator.pop(context),
+                ),
+
             ],
           ),
         ),

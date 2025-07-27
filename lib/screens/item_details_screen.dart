@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mae_assignment/screens/upload_item_screen.dart';
+import 'package:mae_assignment/services/upload_service.dart';
 import 'package:mae_assignment/widgets/reusable_widgets.dart';
 
 class ItemDetailScreen extends StatelessWidget {
@@ -82,12 +84,27 @@ class ItemDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  
                   // EDIT BUTTON
                   CustomButton(
                     text: "Edit",
                     backgroundColor: Color.fromARGB(255, 216, 166, 176),
                     onPressed: () {
-                      // Edit function will go here later
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UploadItemScreen(
+                            userId: "USER_ID_HERE",
+                            itemId: itemId,
+                            existingImageUrl: imageUrl,
+                            existingName: name,
+                            existingCategory: category,
+                            existingFabric: fabric,
+                            existingSeason: season,
+                            existingStyle: style,
+                          ),
+                        ),
+                      );
                     },
                   ),
                   const SizedBox(height: 10),
@@ -95,9 +112,19 @@ class ItemDetailScreen extends StatelessWidget {
                   // DELETE BUTTON
                   CustomButton(
                     text: "Delete",
-                    backgroundColor: Color.fromARGB(255, 121, 78, 89),
-                    onPressed: () {
-                      // Delete function will go here later
+                    backgroundColor: const Color.fromARGB(255, 121, 78, 89),
+                    onPressed: () async {
+                      try {
+                        await UploadService().deleteItem(itemId);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Item deleted successfully")),
+                        );
+                        Navigator.pop(context);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error: $e")),
+                        );
+                      }
                     },
                   ),
                 ],
