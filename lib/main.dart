@@ -1,14 +1,22 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mae_assignment/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
+// Theme
+import 'package:mae_assignment/stylist_files/theme/app_theme.dart';
 
-import 'screens/login/register_screen.dart';
-import 'screens/login/login_screen.dart';
-import 'screens/sisterprofile/profile_screen.dart';
-import 'screens/sisterprofile/edit_profile_screen.dart';
+// Shared Login & Register screens
+import 'login/login_screen.dart';
+import 'login/register_screen.dart';
 
-void main() async {
+// Stylist screens
+import 'stylist_files/screens/stylist_main_screen.dart';
+
+// Sister screens
+import 'sister_files/screens/sisterprofile/profile_screen.dart';
+import 'sister_files/screens/sisterprofile/edit_profile_screen.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
@@ -21,14 +29,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Sisters App',
+      title: 'Modest Closet',
+      theme: AppTheme.lightTheme,
 
-      home: const RegisterScreen(),
+      initialRoute: '/login',
 
       routes: {
-        '/register': (context) => const RegisterScreen(),
+        // Shared login/register
         '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
 
+        // Stylist home
+        '/stylist_home': (context) => const StylistMainScreen(),
+
+        // Sister screens
         '/profile': (context) => ProfileScreen(),
         '/editProfile': (context) => const EditProfileScreen(),
       },
